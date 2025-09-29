@@ -1,63 +1,29 @@
-import { useState, useEffect } from "react";
+import Layout from "../components/Layout";
+
+const products = [
+  { id: 1, img: "/chair1.png", desc: "Modern wooden dining chair" },
+  { id: 2, img: "/chair2.png", desc: "Classic leather dining chair" },
+  { id: 3, img: "/chair3.png", desc: "Minimalist fabric chair" },
+  // 可以继续添加图片
+];
 
 export default function Home() {
-  const [contacts, setContacts] = useState([]);
-  const [form, setForm] = useState({ name: "", phone: "" });
-
-  async function fetchContacts() {
-    const res = await fetch("/api/contacts");
-    const data = await res.json();
-    setContacts(data);
-  }
-
-  async function handleSubmit(e) {
-    e.preventDefault();
-    const res = await fetch("/api/contacts", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(form),
-    });
-
-    if (res.ok) {
-      setForm({ name: "", phone: "" });
-      fetchContacts();
-    } else {
-      alert("提交失败！");
-    }
-  }
-
-  useEffect(() => {
-    fetchContacts();
-  }, []);
-
   return (
-    <div style={{ maxWidth: 500, margin: "2rem auto", fontFamily: "sans-serif" }}>
-      <h1>客户联系方式</h1>
-      <form onSubmit={handleSubmit} style={{ marginBottom: "1rem" }}>
-        <input
-          type="text"
-          placeholder="姓名"
-          value={form.name}
-          onChange={(e) => setForm({ ...form, name: e.target.value })}
-          required
-        />
-        <input
-          type="text"
-          placeholder="电话"
-          value={form.phone}
-          onChange={(e) => setForm({ ...form, phone: e.target.value })}
-          required
-        />
-        <button type="submit">提交</button>
-      </form>
-
-      <ul>
-        {contacts.map((c) => (
-          <li key={c.id}>
-            {c.name} - {c.phone} ({new Date(c.created_at).toLocaleString()})
-          </li>
+    <Layout>
+      <div className="columns-1 sm:columns-2 md:columns-3 gap-4 space-y-4">
+        {products.map((p) => (
+          <div key={p.id} className="relative group break-inside-avoid">
+            <img
+              src={p.img}
+              alt={p.desc}
+              className="w-full rounded-lg shadow-md"
+            />
+            <div className="absolute inset-0 bg-black/50 text-white opacity-0 group-hover:opacity-100 flex items-center justify-center rounded-lg transition">
+              <p className="text-center px-2">{p.desc}</p>
+            </div>
+          </div>
         ))}
-      </ul>
-    </div>
+      </div>
+    </Layout>
   );
 }
